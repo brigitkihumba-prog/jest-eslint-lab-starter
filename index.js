@@ -1,33 +1,73 @@
+const {
+  capitalizeWords,
+  filterActiveUsers,
+  logAction
+} = require("./index");
 
-// Utility Functions
+describe("capitalizeWords()", () => {
+  test("capitalizes every word", () => {
+    expect(capitalizeWords("hello world")).toBe("Hello World");
+  });
 
-/**
- * Capitalizes the first letter of each word in the input string.
- * @param {string} input - The input string.
- * @returns {string} - The formatted string.
- */
-function capitalizeWords(input) {
-    return input.replace(/\b\w/g, char => char.toUpperCase());
-}
+  test("handles a single word", () => {
+    expect(capitalizeWords("javascript")).toBe("Javascript");
+  });
 
-/**
- * Filters active users from the array.
- * @param {Array} users - An array of user objects.
- * @returns {Array} - An array of active user objects.
- */
-function filterActiveUsers(users) {
-    return users.filter(user => user.isActive);
-}
+  test("returns an empty string", () => {
+    expect(capitalizeWords("")).toBe("");
+  });
 
-/**
- * Logs an action performed by a user with a timestamp.
- * @param {string} action - The action performed.
- * @param {string} username - The name of the user.
- * @returns {string} - The log message.
- */
-function logAction(action, username) {
-    const timestamp = new Date().toISOString();
-    return `User ${username} performed ${action} at ${timestamp}`;
-}
+  test("does not change an already capitalized string", () => {
+    expect(capitalizeWords("Hello World")).toBe("Hello World");
+  });
+});
 
-module.exports = { capitalizeWords, filterActiveUsers, logAction };
+describe("filterActiveUsers()", () => {
+  test("returns only active users", () => {
+    const users = [
+      { name: "Alice", isActive: true },
+      { name: "Bob", isActive: false },
+      { name: "John", isActive: true }
+    ];
+
+    expect(filterActiveUsers(users)).toEqual([
+      { name: "Alice", isActive: true },
+      { name: "John", isActive: true }
+    ]);
+  });
+
+  test("returns an empty array when no users are active", () => {
+    const users = [
+      { name: "Bob", isActive: false },
+      { name: "Jane", isActive: false }
+    ];
+
+    expect(filterActiveUsers(users)).toEqual([]);
+  });
+
+  test("returns an empty array for an empty input", () => {
+    expect(filterActiveUsers([])).toEqual([]);
+  });
+});
+
+describe("logAction()", () => {
+  test("returns a correctly formatted log message", () => {
+    const result = logAction("login", "Alice");
+
+    expect(result).toContain("User Alice performed login at");
+  });
+
+  test("contains a valid timestamp", () => {
+    const result = logAction("logout", "Bob");
+
+    const timestamp = result.split(" at ")[1];
+
+    expect(new Date(timestamp).toString()).not.toBe("Invalid Date");
+  });
+
+  test("logs different actions correctly", () => {
+    const result = logAction("register", "Jane");
+
+    expect(result).toContain("User Jane performed register");
+  });
+});
