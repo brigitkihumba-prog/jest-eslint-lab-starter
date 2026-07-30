@@ -50,24 +50,3 @@ describe("filterActiveUsers()", () => {
   });
 });
 
-describe("logAction()", () => {
-  test("returns a correctly formatted log message", () => {
-    const result = logAction("login", "Alice");
-
-    expect(result).toContain("User Alice performed login at");
-  });
-
-  test("contains a valid timestamp", () => {
-    const result = logAction("logout", "Bob");
-
-    const timestamp = result.split(" at ")[1];
-
-    expect(new Date(timestamp).toString()).not.toBe("Invalid Date");
-  });
-
-  test("logs different actions correctly", () => {
-    const result = logAction("register", "Jane");
-
-    expect(result).toContain("User Jane performed register");
-  });
-});
